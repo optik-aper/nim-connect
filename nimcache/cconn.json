@@ -1,0 +1,24 @@
+{"compile":[
+["/home/michael/projects/cconn/nimcache/cconn.c", "gcc -c  -w  -I/home/michael/code/Nim/lib -o /home/michael/projects/cconn/nimcache/cconn.o /home/michael/projects/cconn/nimcache/cconn.c"],
+["/home/michael/projects/cconn/nimcache/stdlib_system.c", "gcc -c  -w  -I/home/michael/code/Nim/lib -o /home/michael/projects/cconn/nimcache/stdlib_system.o /home/michael/projects/cconn/nimcache/stdlib_system.c"]
+],
+"link":[
+"/home/michael/projects/cconn/nimcache/cconn.o",
+"/home/michael/projects/cconn/nimcache/stdlib_system.o",
+"/home/michael/projects/cconn/nimcache/stdlib_osproc.o",
+"/home/michael/projects/cconn/nimcache/stdlib_strutils.o",
+"/home/michael/projects/cconn/nimcache/stdlib_parseutils.o",
+"/home/michael/projects/cconn/nimcache/stdlib_math.o",
+"/home/michael/projects/cconn/nimcache/stdlib_algorithm.o",
+"/home/michael/projects/cconn/nimcache/stdlib_os.o",
+"/home/michael/projects/cconn/nimcache/stdlib_times.o",
+"/home/michael/projects/cconn/nimcache/stdlib_posix.o",
+"/home/michael/projects/cconn/nimcache/stdlib_ospaths.o",
+"/home/michael/projects/cconn/nimcache/stdlib_strtabs.o",
+"/home/michael/projects/cconn/nimcache/stdlib_hashes.o",
+"/home/michael/projects/cconn/nimcache/stdlib_streams.o",
+"/home/michael/projects/cconn/nimcache/stdlib_cpuinfo.o",
+"/home/michael/projects/cconn/nimcache/stdlib_linux.o"
+],
+"linkcmd": "gcc   -o /home/michael/projects/cconn/cconn  /home/michael/projects/cconn/nimcache/cconn.o /home/michael/projects/cconn/nimcache/stdlib_system.o /home/michael/projects/cconn/nimcache/stdlib_osproc.o /home/michael/projects/cconn/nimcache/stdlib_strutils.o /home/michael/projects/cconn/nimcache/stdlib_parseutils.o /home/michael/projects/cconn/nimcache/stdlib_math.o /home/michael/projects/cconn/nimcache/stdlib_algorithm.o /home/michael/projects/cconn/nimcache/stdlib_os.o /home/michael/projects/cconn/nimcache/stdlib_times.o /home/michael/projects/cconn/nimcache/stdlib_posix.o /home/michael/projects/cconn/nimcache/stdlib_ospaths.o /home/michael/projects/cconn/nimcache/stdlib_strtabs.o /home/michael/projects/cconn/nimcache/stdlib_hashes.o /home/michael/projects/cconn/nimcache/stdlib_streams.o /home/michael/projects/cconn/nimcache/stdlib_cpuinfo.o /home/michael/projects/cconn/nimcache/stdlib_linux.o  -lm -lrt   -ldl"
+}
