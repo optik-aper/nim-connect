@@ -12,7 +12,7 @@ proc scanSSIDs(): seq[string] =
 
   var ssids = newSeq[string]() 
   var l = ""
-  let ps = startProcess("/sbin/iwlist", "", ["wlp2s0", "scan"])
+  let ps = startProcess("/sbin/iwlist", "", [INTERFACE, "scan"])
   let s = outputStream(ps)
 
   let match = re"ESSID"
