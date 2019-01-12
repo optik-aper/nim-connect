@@ -70,6 +70,33 @@ proc connect(ssid: string): bool=
 
   return true
 
+proc configureDHCP(): bool =
+  let ps = startProcess(
+    command = "dhclient " & INTERFACE,
+    options = {poEvalCommand,poDemon}
+  )
+
+  if not running(ps):
+    echo("Can not start dhclient daemon")
+    return false
+
+  return true
+
+proc restartDNS(): bool = 
+  var (u_out, u_exit) = execCmdEx("service unbound restart")
+
+  if u_exit > 0:
+    echo("Could not restart unbound")
+    return false
+
+  var (n_out, n_exit) = execCmdEx("service nscd restart")
+
+  if n_exit > 0:
+    echo("Could not restart nscd")
+    return false
+
+  return true
+
 proc main(): void =
 
   if not checkArgs():
@@ -79,7 +106,17 @@ proc main(): void =
   case paramStr(1)
   of "connect":
     let ssid = paramStr(2)
+
+    echo("Connecting...")
     if not connect(ssid):
       echo("Could not connect")
+
+    echo("Restarting DHCP...")
+    if not configureDHCP():
+      echo("Could not configure DHCP")
+
+    echo("Restarting DNS...")
+    if not restartDNS():
+      echo("Could not restart DNS")
 
 main()
