@@ -1,6 +1,7 @@
-import osproc, streams, strutils, os, nre, rdstdin
+import osproc, streams, strutils, os, nre, rdstdin, posix
 
 const WPA_SUPP_PATH = "/etc/wpa_supplicant"
+const WPA_SUPP_LOG = "/var/log/wpa_supplicant.log"
 const INTERFACE = "wlp2s0"
 
 proc checkArgs(): bool =
@@ -40,12 +41,17 @@ proc createConf(ssid: string, pass: string): bool =
   return true
 
 proc wpaConnect(ssid: string): bool=
-  let (outp, exit) = execCmdEx(
-    "wpa_supplicant -i " & INTERFACE & " -c " & WPA_SUPP_PATH & "/" & ssid & ".conf"
+  let cmd = "wpa_supplicant -i " & INTERFACE & 
+    " -f " & WPA_SUPP_LOG & 
+    " -c " & WPA_SUPP_PATH & "/" & ssid & ".conf" 
+
+  let ps = startProcess(
+    command = cmd, 
+    options = {poEvalCommand,poDemon}
   )
 
-  if exit > 0:
-    echo("Could not connect with wpa_supplicant")
+  if not running(ps):
+    echo("Can not start wpa_supplicant daemon")
     return false
 
   return true
@@ -67,8 +73,8 @@ proc connect(ssid: string): bool=
 proc main(): void =
 
   if not checkArgs():
-    # TODO showHelp()
-    quit(1)
+    discard
+    # TODO showHelp() quit(1)
 
   case paramStr(1)
   of "connect":
