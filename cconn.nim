@@ -1,8 +1,19 @@
-import osproc, streams, strutils, os, nre, rdstdin, posix, sequtils
+import 
+  osproc, 
+  streams, 
+  strutils, 
+  os, 
+  nre, 
+  rdstdin, 
+  posix, 
+  sequtils, 
+  parsecfg
 
-const WPA_SUPP_PATH = "/etc/wpa_supplicant"
-const WPA_SUPP_LOG = "/var/log/wpa_supplicant.log"
-const INTERFACE = "wlp2s0"
+var config = loadConfig("config.ini")
+
+var WPA_SUPP_PATH = config.getSectionValue("system", "wpa_supp_path")
+var WPA_SUPP_LOG = config.getSectionValue("system", "wpa_supp_log")
+var INTERFACE = config.getSectionValue("system", "wireless_interface")
 
 proc checkArgs(): bool =
   if paramCount() < 2:
