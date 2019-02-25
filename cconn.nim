@@ -1,4 +1,4 @@
-import osproc, streams, strutils, os, nre, rdstdin, posix
+import osproc, streams, strutils, os, nre, rdstdin, posix, sequtils
 
 const WPA_SUPP_PATH = "/etc/wpa_supplicant"
 const WPA_SUPP_LOG = "/var/log/wpa_supplicant.log"
@@ -56,6 +56,33 @@ proc wpaConnect(ssid: string): bool=
 
   return true
 
+proc wpaRunningPids(): seq[int]=
+
+  let (outp, exit) = execCmdEx(
+    "ps aux | grep 'wpa_supplicant' | grep -v grep | awk '{ print $2 }' ORS=','" 
+  )
+
+  var pids: seq[int] = @[] 
+
+  for id in split(outp, ","):
+    if len(id) > 0:
+      try:
+        pids.add(parseInt(id))
+
+      except ValueError:
+        discard
+
+  return pids
+
+proc killProcess(id: int): void =
+
+  let (outp, exit) = execCmdEx(
+    "kill " & $id
+  )
+
+  if exit != 0:
+    raise newException(OSError, $exit)
+
 proc connect(ssid: string): bool=
 
   if not checkConf(ssid):
@@ -97,6 +124,18 @@ proc restartDNS(): bool =
 
   return true
 
+proc disconnect(): void =
+
+  var pids = wpaRunningPids()
+
+  if len(pids) > 0:
+    for id in pids:
+      try:
+        killProcess(id)
+      except OSError:
+        echo("Could not kill process " & $id)
+        raise
+
 proc main(): void =
 
   if not checkArgs():
@@ -106,6 +145,13 @@ proc main(): void =
   case paramStr(1)
   of "connect":
     let ssid = paramStr(2)
+
+    try:
+      echo("Killing old processes...")
+      disconnect()
+    except:
+      echo("Could not clean up wpa_supplicant processes...")
+      quit(QuitFailure)
 
     echo("Connecting...")
     if not connect(ssid):
@@ -118,5 +164,13 @@ proc main(): void =
     echo("Restarting DNS...")
     if not restartDNS():
       echo("Could not restart DNS")
+
+  of "disconnect":
+    try:
+      echo("Killing old processes...")
+      disconnect()
+    except:
+      echo("Could not clean up wpa_supplicant processes...")
+      quit(QuitFailure)
 
 main()
