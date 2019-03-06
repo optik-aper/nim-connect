@@ -7,9 +7,11 @@ import
   rdstdin, 
   posix, 
   sequtils, 
-  parsecfg
+  parsecfg,
+  ospaths
 
-var config = loadConfig(getAppDir() & "/config.ini")
+var config_path = splitPath(getAppDir())[0] & "/config.ini"
+var config = loadConfig(config_path)
 var WPA_SUPP_PATH = config.getSectionValue("system", "wpa_supp_path")
 var WPA_SUPP_LOG = config.getSectionValue("system", "wpa_supp_log")
 var INTERFACE = config.getSectionValue("system", "wireless_interface")
