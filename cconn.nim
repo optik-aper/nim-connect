@@ -9,8 +9,7 @@ import
   sequtils, 
   parsecfg
 
-var config = loadConfig("config.ini")
-
+var config = loadConfig(getAppDir() & "/config.ini")
 var WPA_SUPP_PATH = config.getSectionValue("system", "wpa_supp_path")
 var WPA_SUPP_LOG = config.getSectionValue("system", "wpa_supp_log")
 var INTERFACE = config.getSectionValue("system", "wireless_interface")
