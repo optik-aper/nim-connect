@@ -195,4 +195,15 @@ proc main(): void =
       quit(QuitFailure)
 
     # TODO clear out routes
+
+  of "scan":
+    try:
+      echo("Scanning nearby SSIDs...")
+      for s in scanSSIDs():
+        echo("-> '" & s & "'")
+        
+    except:
+      echo("Could not scan on interface " & INTERFACE)
+
+
 main()
