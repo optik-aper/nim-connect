@@ -5,7 +5,7 @@ author = "Michael Riley"
 description = "A CLI tool to connect to wireless networks"
 license = "MIT"
 
-bin = @["cconn"]
+bin = @["cconn", "proc_test"]
 srcDir = "src"
 binDir = "bin"
 
