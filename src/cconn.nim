@@ -30,7 +30,7 @@ proc checkArgs(): bool =
     return false
   return true
 
-proc scanSSIDs(): seq[string] =
+proc ssidScan(): seq[string] =
 
   var ssids = newSeq[string]() 
   var l = ""
@@ -104,7 +104,7 @@ proc killProcess(id: int): void =
   if exit != 0:
     raise newException(OSError, $exit)
 
-proc connect(ssid: string): bool=
+proc ssidConnect(ssid: string): bool=
 
   if not checkConf(ssid):
     let pass = readLineFromStdin "Password: "
@@ -166,7 +166,7 @@ proc setDeviceStatus(status: string): bool =
   else:
     echo("Invalid command")
 
-proc disconnect(): void =
+proc ssidDisconnect(): void =
 
   var pids = wpaRunningPids()
 
@@ -190,13 +190,13 @@ proc main(): void =
 
     try:
       echo("Killing old processes...")
-      disconnect()
+      ssidDisconnect()
     except:
       echo("Could not clean up wpa_supplicant processes...")
       quit(QuitFailure)
 
     echo("Connecting...")
-    if not connect(ssid):
+    if not ssidConnect(ssid):
       echo("Could not connect")
 
     echo("Restarting DHCP...")
@@ -210,7 +210,7 @@ proc main(): void =
   of "disconnect":
     try:
       echo("Killing old processes...")
-      disconnect()
+      ssidDisconnect()
     except:
       echo("Could not clean up wpa_supplicant processes...")
       quit(QuitFailure)
@@ -220,11 +220,10 @@ proc main(): void =
   of "scan":
     try:
       echo("Scanning nearby SSIDs...")
-      for s in scanSSIDs():
+      for s in ssidScan():
         echo("-> '" & s & "'")
         
     except:
       echo("Could not scan on interface " & INTERFACE)
-
 
 main()
