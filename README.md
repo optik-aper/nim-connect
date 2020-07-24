@@ -16,3 +16,4 @@ The binary relies on an .ini file in the root of the directory
 - restart DHCP to flush out leases after disconnect
 - clear out any routes on the device after disconnect
 - check interface status before enabling/disabling
+- 
