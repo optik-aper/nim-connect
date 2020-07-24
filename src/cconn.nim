@@ -145,7 +145,7 @@ proc restartDNS(): bool =
 
   return true
 
-proc setDeviceStatus(status: string): bool =
+proc deviceSetStatus(status: string): bool =
   var (ip_out, ip_exit) = execCmdEx("ip link set dev " & INTERFACE & " " & status)
 
   case ip_exit:
@@ -178,6 +178,59 @@ proc ssidDisconnect(): void =
         echo("Could not kill process " & $id)
         raise
 
+proc connect(ssid: string): void =
+
+  if not deviceSetStatus("up"):
+    echo("There was a problem enabling the interface")
+    quit(QuitFailure)
+  
+  try:
+    echo("Killing old processes...")
+    ssidDisconnect()
+  except:
+    echo("Could not clean up wpa_supplicant processes...")
+    quit(QuitFailure)
+
+  echo("Connecting...")
+  if not ssidConnect(ssid):
+    echo("Could not connect")
+    quit(QuitFailure)
+
+  echo("Restarting DHCP...")
+  if not configureDHCP():
+    echo("Could not configure DHCP")
+
+  echo("Restarting DNS...")
+  if not restartDNS():
+    echo("Could not restart DNS")
+
+  quit(QuitSuccess)
+
+proc disconnect(): void =
+  try:
+    echo("Killing old processes...")
+    ssidDisconnect()
+  except:
+    echo("Could not clean up wpa_supplicant processes...")
+    quit(QuitFailure)
+
+  if not deviceSetStatus("down"):
+    echo("There was a problem disabling the interface")
+    quit(QuitFailure)
+
+    # TODO clear out routes
+
+proc scan(): void =
+  try:
+    echo("Scanning nearby SSIDs...")
+    for s in ssidScan():
+      echo("-> '" & s & "'")
+    quit(QuitSuccess)
+      
+  except:
+    echo("Could not scan on interface " & INTERFACE)
+    quit(QuitFailure)
+
 proc main(): void =
 
   if not checkArgs():
@@ -186,44 +239,12 @@ proc main(): void =
 
   case paramStr(1)
   of "connect":
-    let ssid = paramStr(2)
-
-    try:
-      echo("Killing old processes...")
-      ssidDisconnect()
-    except:
-      echo("Could not clean up wpa_supplicant processes...")
-      quit(QuitFailure)
-
-    echo("Connecting...")
-    if not ssidConnect(ssid):
-      echo("Could not connect")
-
-    echo("Restarting DHCP...")
-    if not configureDHCP():
-      echo("Could not configure DHCP")
-
-    echo("Restarting DNS...")
-    if not restartDNS():
-      echo("Could not restart DNS")
+    connect(paramStr(2))
 
   of "disconnect":
-    try:
-      echo("Killing old processes...")
-      ssidDisconnect()
-    except:
-      echo("Could not clean up wpa_supplicant processes...")
-      quit(QuitFailure)
-
-    # TODO clear out routes
+    disconnect()
 
   of "scan":
-    try:
-      echo("Scanning nearby SSIDs...")
-      for s in ssidScan():
-        echo("-> '" & s & "'")
-        
-    except:
-      echo("Could not scan on interface " & INTERFACE)
+    scan()
 
 main()
