@@ -145,6 +145,27 @@ proc restartDNS(): bool =
 
   return true
 
+proc setDeviceStatus(status: string): bool =
+  var (ip_out, ip_exit) = execCmdEx("ip link set dev " & INTERFACE & " " & status)
+
+  case ip_exit:
+  of 0:
+    echo("Successfully set device " & INTERFACE & " " & status)
+    return true
+
+  of 1:
+    echo("Error in ip link command when setting " & INTERFACE & " " & status)
+    echo(ip_out)
+    return false
+
+  of 2:
+    echo("Error occurred in kernel when setting " & INTERFACE & " " & status)
+    echo(ip_out)
+    return false
+
+  else:
+    echo("Invalid command")
+
 proc disconnect(): void =
 
   var pids = wpaRunningPids()
