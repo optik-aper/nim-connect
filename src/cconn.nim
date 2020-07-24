@@ -16,6 +16,15 @@ var WPA_SUPP_PATH = config.getSectionValue("system", "wpa_supp_path")
 var WPA_SUPP_LOG = config.getSectionValue("system", "wpa_supp_log")
 var INTERFACE = config.getSectionValue("system", "wireless_interface")
 
+#   Other connect steps
+#   - Flush address on device
+#     `ip addr flush dev wlp2s0`
+#   - Link cycle device
+#     `ip link set wlp2s0 down && ip link set wlp2s0 up`
+#    
+#    Other disconnect steps
+#    - Stop dhclient
+
 proc checkArgs(): bool =
   if paramCount() < 2:
     return false
@@ -185,4 +194,5 @@ proc main(): void =
       echo("Could not clean up wpa_supplicant processes...")
       quit(QuitFailure)
 
+    # TODO clear out routes
 main()
