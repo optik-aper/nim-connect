@@ -19,8 +19,6 @@ var INTERFACE = config.getSectionValue("system", "wireless_interface")
 #   Other connect steps
 #   - Flush address on device
 #     `ip addr flush dev wlp2s0`
-#   - Link cycle device
-#     `ip link set wlp2s0 down && ip link set wlp2s0 up`
 #    
 #    Other disconnect steps
 #    - Stop dhclient
